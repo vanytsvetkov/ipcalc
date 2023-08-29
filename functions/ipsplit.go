@@ -9,10 +9,7 @@ import (
 func IPsplit(prefix string, subnetSize int, sep string) (string, error) {
 	var result string
 
-	ip, ipNet, err := net.ParseCIDR(prefix)
-	if err != nil {
-		return result, err
-	}
+	ip, ipNet, _ := net.ParseCIDR(prefix)
 
 	var subnets []string
 

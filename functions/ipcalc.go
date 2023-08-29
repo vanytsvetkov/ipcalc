@@ -9,10 +9,7 @@ import (
 func IPcalc(prefix string) (string, error) {
 	var result string
 
-	ip, ipNet, err := net.ParseCIDR(prefix)
-	if err != nil {
-		return result, err
-	}
+	ip, ipNet, _ := net.ParseCIDR(prefix)
 
 	ipv4 := Byte(ip.To4())
 	netmask := Byte(ipNet.Mask)
@@ -48,7 +45,7 @@ func IPcalc(prefix string) (string, error) {
 		broadcast = ByteFromUint32(ipv4.ToUint32() | wildcard.ToUint32())
 		//	1<<0 is 00000000.00000000.00000000.00000001
 		hostMin = ByteFromUint32(network.ToUint32() | 1<<0)
-		// "&^" operator performs a bitwise AND NOT on unsigned integer types,
+		//	"&^" operator performs a bitwise AND NOT on unsigned integer types,
 		hostMax = ByteFromUint32(broadcast.ToUint32() &^ 1 << 0) // clear last bit on broadcast
 
 		hosts = (broadcast.ToUint32() - network.ToUint32()) - 1

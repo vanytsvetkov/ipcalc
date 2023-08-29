@@ -4,6 +4,7 @@ import (
 	"fmt"
 	flag "github.com/ogier/pflag"
 	"github.com/vanytsvetkov/ipcalc/functions"
+	"net"
 )
 
 func main() {
@@ -21,6 +22,12 @@ func main() {
 	}
 
 	prefix = flag.Arg(0)
+	_, ipNet, err := net.ParseCIDR(prefix)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ipMask, _ := ipNet.Mask.Size()
 
 	ipcalcResult, err := functions.IPcalc(prefix)
 	if err != nil {
@@ -29,7 +36,7 @@ func main() {
 	}
 	fmt.Println(ipcalcResult)
 
-	if subnetSize > 0 {
+	if subnetSize > 0 && subnetSize >= ipMask && subnetSize <= 32 {
 		ipsplitResult, err := functions.IPsplit(prefix, subnetSize, separator)
 		if err != nil {
 			fmt.Println(err)
